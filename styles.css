@@ -1,0 +1,203 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1e1e2f, #2a2a4a);
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+body.light-mode {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    color: #333333;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+body.light-mode header {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.logo img {
+    height: 50px;
+}
+
+nav button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+nav button:hover {
+    background: #0056b3;
+}
+
+nav button i {
+    margin-right: 5px;
+}
+
+/* Main Content */
+main {
+    padding: 20px;
+}
+
+.hero, .about, .apps {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero h1, .apps h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #00ddeb;
+}
+
+body.light-mode .hero h1, body.light-mode .apps h1 {
+    color: #007bff;
+}
+
+.hero p, .about p, .apps p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.hero button {
+    background: #00ddeb;
+    color: #1e1e2f;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.hero button:hover {
+    background: #00b7c2;
+}
+
+.hero button i {
+    margin-right: 5px;
+}
+
+/* App Grid */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.app-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    transition: transform 0.3s;
+}
+
+body.light-mode .app-card {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.app-card:hover {
+    transform: translateY(-5px);
+}
+
+.app-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.app-card p {
+    font-size: 1em;
+    margin-bottom: 15px;
+}
+
+.app-card button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+}
+
+.app-card button:hover {
+    background: #218838;
+}
+
+.app-card button i {
+    margin-right: 5px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+body.light-mode footer {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.contact-links a {
+    color: #00ddeb;
+    font-size: 2em;
+    margin: 0 10px;
+    transition: color 0.3s;
+}
+
+body.light-mode .contact-links a {
+    color: #007bff;
+}
+
+.contact-links a:hover {
+    color: #ffffff;
+}
+
+body.light-mode .contact-links a:hover {
+    color: #333333;
+}
+
+footer p {
+    margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    nav button {
+        margin: 5px;
+    }
+    .hero h1, .apps h1 {
+        font-size: 2em;
+    }
+}
