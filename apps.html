@@ -1,70 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nawid_teach - Apps</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nawid_teach - Apps</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <a href="index.html"><img src="logo.png" alt="Nawid_teach Logo"></a>
-        </div>
-        <nav>
-            <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
-            <button onclick="window.location.href='apps.html'"><i class="fas fa-mobile-alt"></i> Apps</button>
-            <button id="theme-toggle"><i class="fas fa-moon"></i> Toggle Theme</button>
-        </nav>
-    </header>
+  <header>
+    <div class="logo">
+      <a href="index.html"><img src="logo.png" alt="Nawid_teach Logo"/></a>
+    </div>
+    <nav>
+      <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
+      <button onclick="window.location.href='apps.html'"><i class="fas fa-mobile-alt"></i> Apps</button>
+      <button id="theme-toggle"><i class="fas fa-moon"></i> Toggle Theme</button>
+    </nav>
+  </header>
 
-    <main>
-        <section class="apps">
-            <h1>Modded Apps</h1>
-            <p>Browse our collection of hacked and modded APKs. Each app unlocks premium features for free!</p>
-            <div class="app-grid" id="app-container">
-                <!-- App cards will load here from Google Apps Script -->
-            </div>
-        </section>
-    </main>
+  <main>
+    <section class="apps">
+      <h1>Modded Apps</h1>
+      <p>Browse our collection of hacked and modded APKs. Each app unlocks premium features for free!</p>
+      <div class="app-grid" id="app-container">
+        <!-- App cards will load here from Google Apps Script -->
+      </div>
+    </section>
+  </main>
 
-    <footer>
-        <h3>Contact Us</h3>
-        <div class="contact-links">
-            <a href="https://www.instagram.com/nawidteach?igsh=MW5jeGFnaTIyZjhzOA==" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://t.me/Nawid_teach" target="_blank"><i class="fab fa-telegram"></i></a>
-            <a href="https://youtube.com/@nawidteach?si=ee5Qoo4Q26ja-aG2" target="_blank"><i class="fab fa-youtube"></i></a>
-        </div>
-        <p>© 2025 Nawid_teach. All rights reserved.</p>
-    </footer>
+  <footer>
+    <h3>Contact Us</h3>
+    <div class="contact-links">
+      <a href="https://www.instagram.com/nawidteach?igsh=MW5jeGFnaTIyZjhzOA==" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://t.me/Nawid_teach" target="_blank"><i class="fab fa-telegram"></i></a>
+      <a href="https://youtube.com/@nawidteach?si=ee5Qoo4Q26ja-aG2" target="_blank"><i class="fab fa-youtube"></i></a>
+    </div>
+    <p>© 2025 Nawid_teach. All rights reserved.</p>
+  </footer>
 
-    <script>
-    // Replace this with your deployed Apps Script GET URL
+  <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbyAl4RiehwRT6NAaNOD1MT0uHBJE8sv3r1rvE1i1OcUdSa-9wTYuTEArIEKNZujRNhP/exec";
 
     fetch(appDataURL)
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('app-container');
-        const appCard = document.createElement('div');
-        appCard.className = 'app-card';
+        container.innerHTML = ""; // clear first
 
-        appCard.innerHTML = `
-            <h3>${data.name}</h3>
-            <p>${data.description}</p>
-            <button onclick="window.location.href='${data.download}'">
+        if (Array.isArray(data)) {
+          data.forEach(app => {
+            const appCard = document.createElement('div');
+            appCard.className = 'app-card';
+
+            appCard.innerHTML = `
+              <h3>${app.name}</h3>
+              <p>${app.description}</p>
+              <button onclick="window.location.href='${app.download}'">
                 <i class="fas fa-download"></i> Download
-            </button>
-        `;
+              </button>
+            `;
 
-        container.appendChild(appCard);
+            container.appendChild(appCard);
+          });
+        } else {
+          console.error("Expected an array of apps, got:", data);
+        }
       })
       .catch(err => {
         console.error("Failed to load app data:", err);
       });
-    </script>
+  </script>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
