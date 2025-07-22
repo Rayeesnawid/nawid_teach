@@ -24,7 +24,7 @@
       <h1>Modded Apps</h1>
       <p>Browse our collection of hacked and modded APKs. Each app unlocks premium features for free!</p>
       <div class="app-grid" id="app-container">
-        <!-- App cards will load here from Google Apps Script -->
+        <!-- App cards will load here -->
       </div>
     </section>
   </main>
@@ -41,28 +41,64 @@
 
   <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbyAl4RiehwRT6NAaNOD1MT0uHBJE8sv3r1rvE1i1OcUdSa-9wTYuTEArIEKNZujRNhP/exec";
+    const container = document.getElementById('app-container');
 
+    function displayApps(apps) {
+      container.innerHTML = "";
+      const namesSeen = new Set();
+
+      apps.forEach(app => {
+        if (!namesSeen.has(app.name)) {
+          namesSeen.add(app.name);
+          const appCard = document.createElement('div');
+          appCard.className = 'app-card';
+          appCard.innerHTML = `
+            <h3>${app.name}</h3>
+            <p>${app.description}</p>
+            <button onclick="window.location.href='${app.download}'">
+              <i class="fas fa-download"></i> Download
+            </button>
+          `;
+          container.appendChild(appCard);
+        }
+      });
+    }
+
+    function loadFromCache() {
+      const cached = localStorage.getItem("cachedApps");
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          displayApps(parsed);
+        } catch (e) {
+          console.warn("Failed to parse cache, clearing...");
+          localStorage.removeItem("cachedApps");
+        }
+      }
+    }
+
+    function updateCacheAndDisplay(apps) {
+      localStorage.setItem("cachedApps", JSON.stringify(apps));
+      displayApps(apps);
+    }
+
+    loadFromCache(); // Show instantly
+
+    // Then fetch latest from online and refresh
     fetch(appDataURL)
       .then(res => res.json())
       .then(data => {
-        const container = document.getElementById('app-container');
-        container.innerHTML = ""; // clear first
-
         if (Array.isArray(data)) {
-          data.forEach(app => {
-            const appCard = document.createElement('div');
-            appCard.className = 'app-card';
+          const cached = localStorage.getItem("cachedApps");
+          const previous = cached ? JSON.parse(cached) : [];
+          const newData = data.filter(app =>
+            !previous.some(prev => prev.name === app.name)
+          );
 
-            appCard.innerHTML = `
-              <h3>${app.name}</h3>
-              <p>${app.description}</p>
-              <button onclick="window.location.href='${app.download}'">
-                <i class="fas fa-download"></i> Download
-              </button>
-            `;
-
-            container.appendChild(appCard);
-          });
+          if (newData.length > 0 || data.length !== previous.length) {
+            // Refresh if any app is new OR admin deleted one
+            updateCacheAndDisplay(data);
+          }
         } else {
           console.error("Expected an array of apps, got:", data);
         }
