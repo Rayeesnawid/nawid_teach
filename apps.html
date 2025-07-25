@@ -9,6 +9,8 @@
       background: white;
       color: #111;
       transition: all 0.3s;
+      margin: 0;
+      padding-bottom: 60px; /* for footer spacing */
     }
     .dark-mode {
       background: #111;
@@ -47,11 +49,52 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    /* Footer styles */
+    footer {
+      background: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #444;
+    }
+    .dark-mode footer {
+      background: #181818;
+      color: #bbb;
+    }
+    .social-icons {
+      margin-top: 10px;
+    }
+    .social-icons a {
+      margin: 0 10px;
+      color: inherit;
+      text-decoration: none;
+      font-size: 20px;
+    }
+    .social-icons a:hover {
+      opacity: 0.7;
+    }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
   <button id="toggle-theme">Dark Mode</button>
   <div id="app-container">Loading apps...</div>
+
+  <footer>
+    <div><strong>Nawid Mods</strong></div>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/nawidteach?igsh=MW5jeGFnaTIyZjhzOA==" target="_blank" title="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://t.me/Nawid_teach" target="_blank" title="Telegram">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="https://youtube.com/@nawidteach?si=ee5Qoo4Q26ja-aG2" target="_blank" title="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+    </div>
+  </footer>
 
   <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbyAl4RiehwRT6NAaNOD1MT0uHBJE8sv3r1rvE1i1OcUdSa-9wTYuTEArIEKNZujRNhP/exec";
