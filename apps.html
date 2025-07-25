@@ -49,8 +49,10 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
-    /* Footer styles */
+    .btn.disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
     footer {
       background: #f0f0f0;
       padding: 20px;
@@ -129,10 +131,19 @@
 
       const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
 
+      // Validate the download link
+      const downloadLink = app.link && typeof app.link === 'string' && app.link.trim() !== '' 
+        ? app.link 
+        : null;
+
+      const downloadButton = downloadLink 
+        ? `<button class="btn" onclick="window.location.href='${downloadLink}'">Download</button>`
+        : `<button class="btn disabled" disabled>Download Unavailable</button>`;
+
       appCard.innerHTML = `
         <h3>${app.name || "Unnamed App"}</h3>
         <p>${app.description || "No description available"}</p>
-        <button class="btn" onclick="window.location.href='${app.link}'">Download</button>
+        ${downloadButton}
         <button class="btn" onclick="copyToClipboard('${shareLink}')">Copy Link</button>
       `;
 
@@ -220,4 +231,4 @@
     document.addEventListener("DOMContentLoaded", fetchApps);
   </script>
 </body>
-</html>
+  </html>
