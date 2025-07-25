@@ -1,4 +1,3 @@
-<script>
 const appDataURL = "https://script.google.com/macros/s/AKfycbyAl4RiehwRT6NAaNOD1MT0uHBJE8sv3r1rvE1i1OcUdSa-9wTYuTEArIEKNZujRNhP/exec";
 
 function getQueryParam(key) {
@@ -7,28 +6,40 @@ function getQueryParam(key) {
 }
 
 function saveToLocal(data) {
-  localStorage.setItem("apps_cache", JSON.stringify(data));
+  try {
+    localStorage.setItem("apps_cache", JSON.stringify(data));
+  } catch (e) {
+    console.error("Failed to save to localStorage:", e);
+  }
 }
 
 function loadFromLocal() {
-  const cache = localStorage.getItem("apps_cache");
-  if (cache) {
-    return JSON.parse(cache);
+  try {
+    const cache = localStorage.getItem("apps_cache");
+    return cache ? JSON.parse(cache) : null;
+  } catch (e) {
+    console.error("Failed to load from localStorage:", e);
+    return null;
   }
-  return null;
 }
 
 function renderApp(app, index) {
   const container = document.getElementById("app-container");
+  if (!container) {
+    console.error("Container element with id 'app-container' not found.");
+    document.body.innerHTML = "<p>Error: App container not found. Please ensure the HTML has a div with id='app-container'.</p>";
+    return;
+  }
+
   const appCard = document.createElement("div");
   appCard.className = "app-card";
 
   const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
 
   appCard.innerHTML = `
-    <h3>${app.name}</h3>
-    <p>${app.description}</p>
-    <button onclick="window.location.href='${app.download}'">
+    <h3>${app.name || "Unnamed App"}</h3>
+    <p>${app.description || "No description available"}</p>
+    <button onclick="window.location.href='${app.download || "#"}'">
       <i class="fas fa-download"></i> Download
     </button>
     <button onclick="copyToClipboard('${shareLink}')">
@@ -40,16 +51,40 @@ function renderApp(app, index) {
 }
 
 function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    alert("Link copied!");
-  });
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Link copied!");
+    }).catch(err => {
+      console.error("Failed to copy link:", err);
+      alert("Failed to copy link. Please copy it manually: " + text);
+    });
+  } else {
+    // Fallback for non-secure contexts or older browsers
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      alert("Link copied!");
+    } catch (err) {
+      console.error("Fallback copy failed:", err);
+      alert("Failed to copy link. Please copy it manually: " + text);
+    }
+    document.body.removeChild(textarea);
+  }
 }
 
 function displayApps(apps) {
-  const id = getQueryParam("id");
   const container = document.getElementById("app-container");
+  if (!container) {
+    console.error("Container element with id 'app-container' not found.");
+    document.body.innerHTML = "<p>Error: App container not found. Please ensure the HTML has a div with id='app-container'.</p>";
+    return;
+  }
   container.innerHTML = "";
 
+  const id = getQueryParam("id");
   if (id !== null && !isNaN(id) && apps[parseInt(id)]) {
     renderApp(apps[parseInt(id)], parseInt(id));
   } else {
@@ -61,13 +96,19 @@ function displayApps(apps) {
 
 function fetchApps() {
   fetch(appDataURL)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      return res.json();
+    })
     .then(data => {
       if (Array.isArray(data)) {
         saveToLocal(data);
         displayApps(data);
       } else {
         console.error("Invalid data format:", data);
+        document.getElementById("app-container")?.innerText = "Invalid data received from server.";
       }
     })
     .catch(err => {
@@ -76,10 +117,14 @@ function fetchApps() {
       if (cached) {
         displayApps(cached);
       } else {
-        document.getElementById("app-container").innerText = "Failed to load apps.";
+        const container = document.getElementById("app-container");
+        if (container) {
+          container.innerText = "Failed to load apps. Please try again later.";
+        } else {
+          document.body.innerHTML = "<p>Error: App container not found, and no cached data available.</p>";
+        }
       }
     });
 }
 
-fetchApps();
-</script>
+document.addEventListener("DOMContentLoaded", fetchApps);
