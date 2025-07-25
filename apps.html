@@ -131,9 +131,9 @@
 
       const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
 
-      // Validate the download link
-      const downloadLink = app.link && typeof app.link === 'string' && app.link.trim() !== '' 
-        ? app.link 
+      // Validate the download link (use app.download instead of app.link)
+      const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
+        ? app.download 
         : null;
 
       const downloadButton = downloadLink 
@@ -195,6 +195,7 @@
           return res.json();
         })
         .then(data => {
+          console.log("Fetched data:", data); // Debug: Log the fetched data
           if (Array.isArray(data)) {
             saveToLocal(data);
             displayApps(data);
@@ -231,4 +232,4 @@
     document.addEventListener("DOMContentLoaded", fetchApps);
   </script>
 </body>
-  </html>
+</html>
