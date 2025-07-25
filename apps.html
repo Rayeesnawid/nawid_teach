@@ -1,113 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nawid Mod - Apps</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-</head>
-<body>
-  <header>
-    <div class="logo">
-      <a href="index.html"><img src="logo.png" alt="Nawid_teach Logo"/></a>
-    </div>
-    <nav>
-      <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
-      <button onclick="window.location.href='apps.html'"><i class="fas fa-mobile-alt"></i> Apps</button>
-      <button id="theme-toggle"><i class="fas fa-moon"></i> Toggle Theme</button>
-    </nav>
-  </header>
+<script>
+const appDataURL = "https://script.google.com/macros/s/AKfycbyAl4RiehwRT6NAaNOD1MT0uHBJE8sv3r1rvE1i1OcUdSa-9wTYuTEArIEKNZujRNhP/exec";
 
-  <main>
-    <section class="apps">
-      <h1>Modded Apps</h1>
-      <p>Browse our collection of hacked and modded APKs. Each app unlocks premium features for free!</p>
-      <div class="app-grid" id="app-container">
-        <!-- App cards will load here -->
-      </div>
-    </section>
-  </main>
+function getQueryParam(key) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(key);
+}
 
-  <footer>
-    <h3>Contact Us</h3>
-    <div class="contact-links">
-      <a href="https://www.instagram.com/nawidteach?igsh=MW5jeGFnaTIyZjhzOA==" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://t.me/Nawidmod" target="_blank"><i class="fab fa-telegram"></i></a>
-      <a href="https://youtube.com/@nawidteach?si=ee5Qoo4Q26ja-aG2" target="_blank"><i class="fab fa-youtube"></i></a>
-    </div>
-    <p>© 2025 Nawid_Mod. All rights reserved.</p>
-  </footer>
+function saveToLocal(data) {
+  localStorage.setItem("apps_cache", JSON.stringify(data));
+}
 
-  <script>
-    const appDataURL = "https://script.google.com/macros/s/AKfycbyAl4RiehwRT6NAaNOD1MT0uHBJE8sv3r1rvE1i1OcUdSa-9wTYuTEArIEKNZujRNhP/exec";
-    const container = document.getElementById('app-container');
+function loadFromLocal() {
+  const cache = localStorage.getItem("apps_cache");
+  if (cache) {
+    return JSON.parse(cache);
+  }
+  return null;
+}
 
-    function displayApps(apps) {
-      container.innerHTML = "";
-      const namesSeen = new Set();
+function renderApp(app, index) {
+  const container = document.getElementById("app-container");
+  const appCard = document.createElement("div");
+  appCard.className = "app-card";
 
-      apps.forEach(app => {
-        if (!namesSeen.has(app.name)) {
-          namesSeen.add(app.name);
-          const appCard = document.createElement('div');
-          appCard.className = 'app-card';
-          appCard.innerHTML = `
-            <h3>${app.name}</h3>
-            <p>${app.description}</p>
-            <button onclick="window.location.href='${app.download}'">
-              <i class="fas fa-download"></i> Download
-            </button>
-          `;
-          container.appendChild(appCard);
-        }
-      });
-    }
+  const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
 
-    function loadFromCache() {
-      const cached = localStorage.getItem("cachedApps");
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached);
-          displayApps(parsed);
-        } catch (e) {
-          console.warn("Failed to parse cache, clearing...");
-          localStorage.removeItem("cachedApps");
-        }
+  appCard.innerHTML = `
+    <h3>${app.name}</h3>
+    <p>${app.description}</p>
+    <button onclick="window.location.href='${app.download}'">
+      <i class="fas fa-download"></i> Download
+    </button>
+    <button onclick="copyToClipboard('${shareLink}')">
+      <i class="fas fa-link"></i> Copy Link
+    </button>
+  `;
+
+  container.appendChild(appCard);
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Link copied!");
+  });
+}
+
+function displayApps(apps) {
+  const id = getQueryParam("id");
+  const container = document.getElementById("app-container");
+  container.innerHTML = "";
+
+  if (id !== null && !isNaN(id) && apps[parseInt(id)]) {
+    renderApp(apps[parseInt(id)], parseInt(id));
+  } else {
+    apps.forEach((app, i) => {
+      renderApp(app, i);
+    });
+  }
+}
+
+function fetchApps() {
+  fetch(appDataURL)
+    .then(res => res.json())
+    .then(data => {
+      if (Array.isArray(data)) {
+        saveToLocal(data);
+        displayApps(data);
+      } else {
+        console.error("Invalid data format:", data);
       }
-    }
+    })
+    .catch(err => {
+      console.error("Network error, loading from cache:", err);
+      const cached = loadFromLocal();
+      if (cached) {
+        displayApps(cached);
+      } else {
+        document.getElementById("app-container").innerText = "Failed to load apps.";
+      }
+    });
+}
 
-    function updateCacheAndDisplay(apps) {
-      localStorage.setItem("cachedApps", JSON.stringify(apps));
-      displayApps(apps);
-    }
-
-    loadFromCache(); // Show instantly
-
-    // Then fetch latest from online and refresh
-    fetch(appDataURL)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          const cached = localStorage.getItem("cachedApps");
-          const previous = cached ? JSON.parse(cached) : [];
-          const newData = data.filter(app =>
-            !previous.some(prev => prev.name === app.name)
-          );
-
-          if (newData.length > 0 || data.length !== previous.length) {
-            // Refresh if any app is new OR admin deleted one
-            updateCacheAndDisplay(data);
-          }
-        } else {
-          console.error("Expected an array of apps, got:", data);
-        }
-      })
-      .catch(err => {
-        console.error("Failed to load app data:", err);
-      });
-  </script>
-
-  <script src="script.js"></script>
-</body>
-</html>
+fetchApps();
+</script>
