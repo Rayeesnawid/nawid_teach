@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Apps</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nawid Mods</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: white;
-      color: #111;
-      transition: all 0.3s;
+      font-family: Arial, sans-serif;
       margin: 0;
-      padding-bottom: 60px; /* for footer spacing */
+      padding: 0 10px 60px;
+      background: #fff;
+      color: #000;
+      transition: all 0.3s;
     }
     .dark-mode {
       background: #111;
@@ -40,24 +41,24 @@
       border-color: #444;
     }
     .app-card h3 {
-      font-size: 24px; /* Explicitly set app name size (unchanged) */
+      font-size: 24px;
       margin: 0 0 8px 0;
     }
     .app-card p {
-      font-size: 14px; /* Smaller font size for description */
+      font-size: 14px;
       margin: 0 0 8px 0;
-      line-height: 1.4; /* Improved readability */
+      line-height: 1.4;
     }
     .btn {
       display: inline-block;
-      padding: 8px 16px; /* Slightly increased padding for larger button */
+      padding: 8px 16px;
       margin-top: 6px;
       background: #0080ff;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px; /* Slightly larger font for button text */
+      font-size: 16px;
     }
     .btn.disabled {
       background: #ccc;
@@ -85,6 +86,12 @@
     }
     .social-icons a:hover {
       opacity: 0.7;
+    }
+    .app-icon {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+      border-radius: 8px;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -145,11 +152,16 @@
         ? app.download 
         : null;
 
+      const iconImage = app.icon
+        ? `<img class="app-icon" src="${app.icon}" alt="${app.name} icon" />`
+        : '';
+
       const downloadButton = downloadLink 
         ? `<button class="btn" onclick="window.location.href='${downloadLink}'">Download</button>`
         : `<button class="btn disabled" disabled>Download Unavailable</button>`;
 
       appCard.innerHTML = `
+        ${iconImage}
         <h3>${app.name || "Unnamed App"}</h3>
         <p>${app.description || "No description available"}</p>
         ${downloadButton}
@@ -204,16 +216,14 @@
           return res.json();
         })
         .then(data => {
-          console.log("Fetched data:", data);
           if (Array.isArray(data)) {
             saveToLocal(data);
             displayApps(data);
           } else {
-            throw new Error("Data format not supported");
+            throw new Error("Invalid data format");
           }
         })
         .catch(err => {
-          console.warn("Fetching failed, loading cache:", err);
           const cached = loadFromLocal();
           if (cached) {
             displayApps(cached);
@@ -239,4 +249,4 @@
     document.addEventListener("DOMContentLoaded", fetchApps);
   </script>
 </body>
-</html>
+  </html>
