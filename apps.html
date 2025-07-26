@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0 10px 60px;
+      padding: 60px 10px;
       background: #fff;
       color: #000;
       transition: all 0.3s;
@@ -29,40 +29,98 @@
       cursor: pointer;
       z-index: 999;
     }
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      z-index: 998;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .dark-mode .header {
+      background: #181818;
+    }
+    .header img {
+      height: 40px;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin: 0;
+    }
     .app-card {
       border: 1px solid #ccc;
       border-radius: 10px;
       padding: 12px;
       margin: 10px;
       background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
     .dark-mode .app-card {
       background: #222;
       border-color: #444;
     }
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
     .app-card h3 {
-      font-size: 24px;
-      margin: 0 0 8px 0;
+      font-size: 20px;
+      margin: 0;
     }
     .app-card p {
-      font-size: 14px;
-      margin: 0 0 8px 0;
+      font-size: 12px;
+      margin: 0;
       line-height: 1.4;
     }
+    .app-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      position: relative;
+    }
+    .mod-badge {
+      position: absolute;
+      left: 0;
+      background: red;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
     .btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       padding: 8px 16px;
-      margin-top: 6px;
       background: #0080ff;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #0066cc;
     }
     .btn.disabled {
       background: #ccc;
       cursor: not-allowed;
+    }
+    .btn i {
+      margin-right: 6px;
+    }
+    .copy-btn {
+      padding: 8px;
     }
     footer {
       background: #f0f0f0;
@@ -88,18 +146,21 @@
       opacity: 0.7;
     }
     .app-icon {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 10px;
-      border-radius: 8px;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 12px;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
+  <div class="header">
+    <img src="logo.png" alt="Nawid Mod Logo"/>
+    <h1>Nawid Mod</h1>
+  </div>
   <button id="toggle-theme">Dark Mode</button>
   <div id="app-container">Loading apps...</div>
-
   <footer>
     <div><strong>Nawid Mods</strong></div>
     <div class="social-icons">
@@ -114,7 +175,6 @@
       </a>
     </div>
   </footer>
-
   <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbzJC3ED45wRlpu-1LD2AguRjKzZasFxO-9Jd1TRliUYw30fjif-PJgzkQB8r1y3ai0T/exec";
 
@@ -148,7 +208,7 @@
 
       const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
 
-      const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
+      const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
         ? app.download 
         : null;
 
@@ -157,15 +217,20 @@
         : '';
 
       const downloadButton = downloadLink 
-        ? `<button class="btn" onclick="window.location.href='${downloadLink}'">Download</button>`
-        : `<button class="btn disabled" disabled>Download Unavailable</button>`;
+        ? `<button class="btn" onclick="window.location.href='${downloadLink}'"><i class="fas fa-download"></i> Download</button>`
+        : `<button class="btn disabled" disabled><i class="fas fa-download"></i> Download Unavailable</button>`;
 
       appCard.innerHTML = `
-        ${iconImage}
-        <h3>${app.name || "Unnamed App"}</h3>
+        <div class="app-header">
+          ${iconImage}
+          <h3>${app.name || "Unnamed App"}</h3>
+        </div>
         <p>${app.description || "No description available"}</p>
-        ${downloadButton}
-        <button class="btn" onclick="copyToClipboard('${shareLink}')">Copy Link</button>
+        <div class="app-actions">
+          <span class="mod-badge">mod</span>
+          ${downloadButton}
+          <button class="btn copy-btn" onclick="copyToClipboard('${shareLink}')"><i class="fas fa-copy"></i></button>
+        </div>
       `;
 
       container.appendChild(appCard);
@@ -249,4 +314,4 @@
     document.addEventListener("DOMContentLoaded", fetchApps);
   </script>
 </body>
-  </html>
+</html>
