@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,7 +7,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 60px 10px;
+      padding: 0 10px 60px;
       background: #fff;
       color: #000;
       transition: all 0.3s;
@@ -29,29 +28,17 @@
       cursor: pointer;
       z-index: 999;
     }
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: #f0f0f0;
-      padding: 10px 0;
+    header {
       text-align: center;
-      z-index: 998;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
+      padding: 20px 0;
     }
-    .dark-mode .header {
-      background: #181818;
+    header img {
+      width: 60px;
+      border-radius: 12px;
     }
-    .header img {
-      height: 40px;
-    }
-    .header h1 {
+    header h1 {
+      margin: 10px 0 0 0;
       font-size: 24px;
-      margin: 0;
     }
     .app-card {
       border: 1px solid #ccc;
@@ -61,7 +48,6 @@
       background: #f9f9f9;
       display: flex;
       flex-direction: column;
-      gap: 10px;
     }
     .dark-mode .app-card {
       background: #222;
@@ -70,57 +56,55 @@
     .app-header {
       display: flex;
       align-items: center;
-      gap: 15px;
     }
-    .app-card h3 {
+    .app-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      margin-right: 12px;
+      object-fit: cover;
+    }
+    .app-name {
       font-size: 20px;
       margin: 0;
+      flex-grow: 1;
     }
-    .app-card p {
-      font-size: 12px;
-      margin: 0;
-      line-height: 1.4;
-    }
-    .app-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      position: relative;
-    }
-    .mod-badge {
-      position: absolute;
-      left: 0;
+    .mod-tag {
       background: red;
       color: white;
-      padding: 2px 8px;
-      border-radius: 12px;
+      border-radius: 10px;
+      padding: 2px 6px;
       font-size: 12px;
-      font-weight: bold;
+      margin-left: 10px;
+    }
+    .app-description {
+      font-size: 13px;
+      margin: 8px 0;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
     }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 16px;
+      padding: 6px 12px;
       background: #0080ff;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.2s;
-    }
-    .btn:hover {
-      background: #0066cc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .btn.disabled {
       background: #ccc;
       cursor: not-allowed;
     }
     .btn i {
-      margin-right: 6px;
-    }
-    .copy-btn {
-      padding: 8px;
+      font-size: 14px;
     }
     footer {
       background: #f0f0f0;
@@ -145,37 +129,27 @@
     .social-icons a:hover {
       opacity: 0.7;
     }
-    .app-icon {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 12px;
-    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
-  <div class="header">
-    <img src="logo.png" alt="Nawid Mod Logo"/>
-    <h1>Nawid Mod</h1>
-  </div>
-  <button id="toggle-theme">Dark Mode</button>
-  <div id="app-container">Loading apps...</div>
-  <footer>
+  <button id="toggle-theme">Dark Mode</button>  <header>
+    <img src="logo.png" alt="Nawid Mods Logo">
+    <h1>Nawid Mods</h1>
+  </header>  <div id="app-container">Loading apps...</div>  <footer>
     <div><strong>Nawid Mods</strong></div>
     <div class="social-icons">
-      <a href="https://www.instagram.com/nawidteach?igsh=MW5jeGFnaTIyZjhzOA==" target="_blank" title="Instagram">
+      <a href="https://www.instagram.com/nawidteach" target="_blank" title="Instagram">
         <i class="fab fa-instagram"></i>
       </a>
       <a href="https://t.me/Nawid_teach" target="_blank" title="Telegram">
         <i class="fab fa-telegram"></i>
       </a>
-      <a href="https://youtube.com/@nawidteach?si=ee5Qoo4Q26ja-aG2" target="_blank" title="YouTube">
+      <a href="https://youtube.com/@nawidteach" target="_blank" title="YouTube">
         <i class="fab fa-youtube"></i>
       </a>
     </div>
-  </footer>
-  <script>
+  </footer>  <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbzJC3ED45wRlpu-1LD2AguRjKzZasFxO-9Jd1TRliUYw30fjif-PJgzkQB8r1y3ai0T/exec";
 
     function getQueryParam(key) {
@@ -207,8 +181,7 @@
       appCard.className = "app-card";
 
       const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
-
-      const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
+      const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
         ? app.download 
         : null;
 
@@ -217,19 +190,18 @@
         : '';
 
       const downloadButton = downloadLink 
-        ? `<button class="btn" onclick="window.location.href='${downloadLink}'"><i class="fas fa-download"></i> Download</button>`
-        : `<button class="btn disabled" disabled><i class="fas fa-download"></i> Download Unavailable</button>`;
+        ? `<button class="btn" onclick="window.location.href='${downloadLink}'"><i class='fas fa-download'></i> Download</button>`
+        : `<button class="btn disabled" disabled><i class='fas fa-download'></i> Unavailable</button>`;
 
       appCard.innerHTML = `
         <div class="app-header">
           ${iconImage}
-          <h3>${app.name || "Unnamed App"}</h3>
+          <h3 class="app-name">${app.name || "Unnamed App"}<span class="mod-tag">mod</span></h3>
         </div>
-        <p>${app.description || "No description available"}</p>
-        <div class="app-actions">
-          <span class="mod-badge">mod</span>
+        <p class="app-description">${app.description || "No description available"}</p>
+        <div class="btn-group">
           ${downloadButton}
-          <button class="btn copy-btn" onclick="copyToClipboard('${shareLink}')"><i class="fas fa-copy"></i></button>
+          <button class="btn" onclick="copyToClipboard('${shareLink}')" title="Copy Link"><i class="fas fa-copy"></i></button>
         </div>
       `;
 
@@ -312,6 +284,5 @@
     }
 
     document.addEventListener("DOMContentLoaded", fetchApps);
-  </script>
-</body>
+  </script></body>
 </html>
