@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -29,8 +28,20 @@
       cursor: pointer;
       z-index: 999;
     }
+    #searchToggle {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #0080ff;
+      color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 999;
+    }
     #searchInput {
-      display: block;
+      display: none;
       margin: 70px auto 10px;
       padding: 10px;
       width: 90%;
@@ -38,6 +49,12 @@
       border-radius: 10px;
       border: 1px solid #ccc;
       font-size: 16px;
+      background: rgba(255,255,255,0.1);
+      color: #333;
+    }
+    .dark-mode #searchInput {
+      background: rgba(0,0,0,0.4);
+      color: white;
     }
     #searchInput:focus {
       outline: none;
@@ -78,6 +95,7 @@
       border-radius: 12px;
       margin-right: 12px;
       object-fit: cover;
+      cursor: pointer;
     }
     .app-name {
       font-size: 20px;
@@ -144,23 +162,26 @@
     .social-icons a:hover {
       opacity: 0.7;
     }
+    .timestamp {
+      font-size: 11px;
+      color: gray;
+      margin-top: 6px;
+    }
+    .origin-note {
+      font-size: 9px;
+      margin-top: 6px;
+      text-align: right;
+      opacity: 0.6;
+    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
-  <button id="toggle-theme">Dark Mode</button>
-
-  <header>
+  <button id="searchToggle"><i class="fas fa-search"></i></button>
+  <button id="toggle-theme">Dark Mode</button>  <header>
     <img src="logo.png" alt="Nawid Mods Logo">
     <h1>Nawid Mods</h1>
-  </header>
-
-  <!-- 🔍 SEARCH BAR -->
-  <input type="text" id="searchInput" placeholder="Search apps...">
-
-  <div id="app-container">Loading apps...</div>
-
-  <footer>
+  </header>  <input type="text" id="searchInput" placeholder="Search apps...">  <div id="app-container">Loading apps...</div>  <footer>
     <div><strong>Nawid Mods</strong></div>
     <div class="social-icons">
       <a href="https://www.instagram.com/nawidteach" target="_blank" title="Instagram">
@@ -174,154 +195,5 @@
       </a>
     </div>
   </footer>
-
-  <script>
-    const appDataURL = "https://script.google.com/macros/s/AKfycbzJC3ED45wRlpu-1LD2AguRjKzZasFxO-9Jd1TRliUYw30fjif-PJgzkQB8r1y3ai0T/exec";
-
-    function getQueryParam(key) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(key);
-    }
-
-    function saveToLocal(data) {
-      try {
-        localStorage.setItem("apps_cache", JSON.stringify(data));
-        localStorage.setItem("apps_cache_time", Date.now());
-      } catch (e) {
-        console.error("Failed to save cache:", e);
-      }
-    }
-
-    function loadFromLocal() {
-      try {
-        const cache = localStorage.getItem("apps_cache");
-        return cache ? JSON.parse(cache) : null;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function renderApp(app, index) {
-      const container = document.getElementById("app-container");
-      const appCard = document.createElement("div");
-      appCard.className = "app-card";
-
-      const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
-      const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
-        ? app.download 
-        : null;
-
-      const iconImage = app.icon
-        ? `<img class="app-icon" src="${app.icon}" alt="${app.name} icon" />`
-        : '';
-
-      const downloadButton = downloadLink 
-        ? `<button class="btn" onclick="window.location.href='${downloadLink}'"><i class='fas fa-download'></i> Download</button>`
-        : `<button class="btn disabled" disabled><i class='fas fa-download'></i> Unavailable</button>`;
-
-      appCard.innerHTML = `
-        <div class="app-header">
-          ${iconImage}
-          <h3 class="app-name">${app.name || "Unnamed App"}<span class="mod-tag">mod</span></h3>
-        </div>
-        <p class="app-description">${app.description || "No description available"}</p>
-        <div class="btn-group">
-          ${downloadButton}
-          <button class="btn" onclick="copyToClipboard('${shareLink}')" title="Copy Link"><i class="fas fa-copy"></i></button>
-        </div>
-      `;
-
-      container.appendChild(appCard);
-    }
-
-    function copyToClipboard(text) {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(() => {
-          alert("Link copied!");
-        }).catch(() => {
-          fallbackCopy(text);
-        });
-      } else {
-        fallbackCopy(text);
-      }
-    }
-
-    function fallbackCopy(text) {
-      const textarea = document.createElement("textarea");
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try {
-        document.execCommand("copy");
-        alert("Link copied!");
-      } catch {
-        alert("Failed. Copy manually: " + text);
-      }
-      document.body.removeChild(textarea);
-    }
-
-    function displayApps(apps) {
-      const container = document.getElementById("app-container");
-      container.innerHTML = "";
-      const id = getQueryParam("id");
-
-      if (id !== null && !isNaN(id) && apps[parseInt(id)]) {
-        renderApp(apps[parseInt(id)], parseInt(id));
-      } else {
-        apps.forEach((app, i) => renderApp(app, i));
-      }
-    }
-
-    function fetchApps() {
-      fetch(appDataURL)
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP error " + res.status);
-          return res.json();
-        })
-        .then(data => {
-          if (Array.isArray(data)) {
-            saveToLocal(data);
-            displayApps(data);
-          } else {
-            throw new Error("Invalid data format");
-          }
-        })
-        .catch(err => {
-          const cached = loadFromLocal();
-          if (cached) {
-            displayApps(cached);
-          } else {
-            document.getElementById("app-container").innerText = "Failed to load apps.";
-          }
-        });
-    }
-
-    const toggleBtn = document.getElementById("toggle-theme");
-    toggleBtn.onclick = () => {
-      document.body.classList.toggle("dark-mode");
-      const isDark = document.body.classList.contains("dark-mode");
-      localStorage.setItem("dark_mode", isDark ? "1" : "0");
-      toggleBtn.innerText = isDark ? "Light Mode" : "Dark Mode";
-    };
-
-    if (localStorage.getItem("dark_mode") === "1") {
-      document.body.classList.add("dark-mode");
-      toggleBtn.innerText = "Light Mode";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      fetchApps();
-
-      document.getElementById("searchInput").addEventListener("input", function () {
-        const query = this.value.toLowerCase();
-        const allApps = document.querySelectorAll("#app-container > .app-card");
-
-        allApps.forEach(app => {
-          const name = app.querySelector("h3").textContent.toLowerCase();
-          app.style.display = name.includes(query) ? "block" : "none";
-        });
-      });
-    });
-  </script>
 </body>
-  </html>
+</html>
