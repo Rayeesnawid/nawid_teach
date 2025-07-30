@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -139,6 +140,11 @@
     .btn i {
       font-size: 14px;
     }
+    .timestamp {
+      font-size: 11px;
+      color: gray;
+      margin-top: 6px;
+    }
     footer {
       background: #f0f0f0;
       padding: 20px;
@@ -162,26 +168,20 @@
     .social-icons a:hover {
       opacity: 0.7;
     }
-    .timestamp {
-      font-size: 11px;
-      color: gray;
-      margin-top: 6px;
-    }
-    .origin-note {
-      font-size: 9px;
-      margin-top: 6px;
-      text-align: right;
-      opacity: 0.6;
-    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
   <button id="searchToggle"><i class="fas fa-search"></i></button>
-  <button id="toggle-theme">Dark Mode</button>  <header>
+  <button id="toggle-theme">Dark Mode</button>
+  <header>
     <img src="logo.png" alt="Nawid Mods Logo">
     <h1>Nawid Mods</h1>
-  </header>  <input type="text" id="searchInput" placeholder="Search apps...">  <div id="app-container">Loading apps...</div>  <footer>
+  </header>
+  <input type="text" id="searchInput" placeholder="Search apps...">
+  <div id="app-container">Loading apps...</div>
+
+  <footer>
     <div><strong>Nawid Mods</strong></div>
     <div class="social-icons">
       <a href="https://www.instagram.com/nawidteach" target="_blank" title="Instagram">
@@ -195,5 +195,80 @@
       </a>
     </div>
   </footer>
+
+  <script>
+    const appContainer = document.getElementById('app-container');
+    const searchInput = document.getElementById('searchInput');
+    const searchToggle = document.getElementById('searchToggle');
+    const themeToggle = document.getElementById('toggle-theme');
+
+    let apps = JSON.parse(localStorage.getItem('apps') || '[]');
+
+    function formatTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderApps(appList) {
+      if (!appList.length) {
+        appContainer.innerHTML = '<p>No apps added yet.</p>';
+        return;
+      }
+      appContainer.innerHTML = '';
+      appList.forEach(app => {
+        const appCard = document.createElement('div');
+        appCard.className = 'app-card';
+        appCard.innerHTML = `
+          <div class="app-header">
+            <img src="${app.icon}" class="app-icon" alt="${app.name}">
+            <h3 class="app-name">${app.name}<span class="mod-tag">MOD</span></h3>
+          </div>
+          <p class="app-description">${app.description}</p>
+          <div class="timestamp">Added at: ${app.time}</div>
+          <div class="btn-group">
+            <button class="btn" onclick="alert('Downloading ${app.name}...')">
+              <i class="fas fa-download"></i>Download
+            </button>
+          </div>
+        `;
+        appContainer.appendChild(appCard);
+      });
+    }
+
+    function addApp(name, description, icon) {
+      const app = {
+        name,
+        description,
+        icon,
+        time: formatTime()
+      };
+      apps.unshift(app);
+      localStorage.setItem('apps', JSON.stringify(apps));
+      renderApps(apps);
+    }
+
+    searchToggle.addEventListener('click', () => {
+      searchInput.style.display = searchInput.style.display === 'block' ? 'none' : 'block';
+    });
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = apps.filter(app => app.name.toLowerCase().includes(query));
+      renderApps(filtered);
+    });
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+
+    // Initial render
+    renderApps(apps);
+
+    // For testing (You can remove this block after final)
+    if (!apps.length) {
+      addApp("Free Fire", "Unlimited diamonds and aim assist", "https://via.placeholder.com/60");
+      addApp("Minecraft PE", "Unlocked skins, free building", "https://via.placeholder.com/60");
+    }
+  </script>
 </body>
-</html>
+    </html>
