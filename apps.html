@@ -97,6 +97,10 @@
       object-fit: cover;
       cursor: pointer;
     }
+    .app-card.isolated .app-icon {
+      width: 100px;
+      height: 100px;
+    }
     .app-name {
       font-size: 20px;
       margin: 0;
@@ -161,6 +165,16 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    .isolated-btn {
+      margin-top: 10px;
+      font-size: 12px;
+      background: #0080ff;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
     footer {
       background: #f0f0f0;
       padding: 20px;
@@ -190,16 +204,12 @@
 <body>
   <button id="search-toggle"><i class="fas fa-search"></i></button>
   <button id="toggle-theme">Dark Mode</button>
-
   <header>
     <img src="logo.png" alt="Nawid Mods Logo">
     <h1>Nawid Mods</h1>
   </header>
-
   <input type="text" id="searchInput" placeholder="Search apps...">
-
   <div id="app-container">Loading apps...</div>
-
   <footer>
     <div><strong>Nawid Mods</strong></div>
     <div class="social-icons">
@@ -214,7 +224,6 @@
       </a>
     </div>
   </footer>
-
   <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbzJC3ED45wRlpu-1LD2AguRjKzZasFxO-9Jd1TRliUYw30fjif-PJgzkQB8r1y3ai0T/exec";
 
@@ -245,6 +254,9 @@
       const container = document.getElementById("app-container");
       const appCard = document.createElement("div");
       appCard.className = "app-card";
+      if (showAllBtn) {
+        appCard.classList.add("isolated");
+      }
 
       const shareLink = `${window.location.origin}${window.location.pathname}?id=${index}`;
       const downloadLink = app.download && typeof app.download === 'string' && app.download.trim() !== '' 
@@ -267,6 +279,7 @@
         </div>
         <div class="post-time">Posted on ${app.time || "unknown"}</div>
         <div class="mod-credit">modded by Nawid mods</div>
+        ${showAllBtn ? `<button class="isolated-btn" onclick="window.open('${homepage}', '_blank')">Visit Website</button>` : ''}
         ${showAllBtn ? `<button class="view-all-btn" onclick="location.href='${window.location.pathname}'">View Our Apps</button>` : ''}
       `;
 
@@ -372,4 +385,4 @@
     });
   </script>
 </body>
-</html>
+  </html
