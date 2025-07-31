@@ -165,16 +165,6 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    .isolated-btn {
-      margin-top: 10px;
-      font-size: 12px;
-      background: #0080ff;
-      color: white;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
     footer {
       background: #f0f0f0;
       padding: 20px;
@@ -279,7 +269,7 @@
         </div>
         <div class="post-time">Posted on ${app.time || "unknown"}</div>
         <div class="mod-credit">modded by Nawid mods</div>
-        ${showAllBtn ? `<a href="https://t.me/Nawidmod" class="isolated-btn" target="_blank">Join Our Telegram</a>` : ''}
+        ${showAllBtn ? `<button class="btn" style="margin-top: 10px;" onclick="window.location.href='https://t.me/Nawidmod'">Join our Telegram channel</button>` : ''}
         ${showAllBtn ? `<button class="view-all-btn" onclick="location.href='${window.location.pathname}'">View Our Apps</button>` : ''}
       `;
 
@@ -385,4 +375,4 @@
     });
   </script>
 </body>
-  </html
+</html>
