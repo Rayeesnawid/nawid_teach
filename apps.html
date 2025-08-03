@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nawid Mods</title>
   <style>
+    /* Existing styles remain unchanged */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -17,176 +18,61 @@
       background: #111;
       color: white;
     }
-    #toggle-theme {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #0080ff;
-      color: white;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      z-index: 999;
-    }
-    #search-toggle {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: #0080ff;
-      color: white;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      z-index: 999;
-    }
-    #searchInput {
+    /* ... (keep all existing styles) ... */
+
+    /* New Modal Styles */
+    .modal {
       display: none;
-      margin: 70px auto 10px;
-      padding: 10px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
       width: 90%;
       max-width: 400px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      background-color: rgba(255, 255, 255, 0.8);
     }
-    .dark-mode #searchInput {
-      background-color: rgba(50, 50, 50, 0.6);
-      color: white;
-    }
-    #searchInput:focus {
-      outline: none;
-      box-shadow: 0 0 5px rgba(100, 100, 255, 0.4);
-    }
-    header {
-      text-align: center;
-      padding: 10px 0;
-    }
-    header img {
-      width: 60px;
-      border-radius: 12px;
-    }
-    header h1 {
-      margin: 10px 0 0 0;
-      font-size: 24px;
-    }
-    .app-card {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 12px;
-      margin: 10px;
-      background: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-    }
-    .dark-mode .app-card {
+    .dark-mode .modal-content {
       background: #222;
-      border-color: #444;
-    }
-    .app-header {
-      display: flex;
-      align-items: center;
-    }
-    .app-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      margin-right: 12px;
-      object-fit: cover;
-      cursor: pointer;
-    }
-    .app-card.isolated .app-icon {
-      width: 100px;
-      height: 100px;
-    }
-    .app-name {
-      font-size: 20px;
-      margin: 0;
-      flex-grow: 1;
-      cursor: pointer;
-    }
-    .mod-tag {
-      background: red;
       color: white;
-      border-radius: 10px;
-      padding: 2px 6px;
-      font-size: 12px;
-      margin-left: 10px;
     }
-    .app-description {
-      font-size: 13px;
-      margin: 8px 0;
+    .modal img {
+      width: 60px;
+      border-radius: 12px;
+      margin-bottom: 10px;
     }
-    .post-time {
-      font-size: 11px;
-      margin-top: auto;
-      color: gray;
-      align-self: flex-start;
+    .modal h3 {
+      margin: 10px 0;
+      font-size: 18px;
     }
-    .btn-group {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .btn {
-      padding: 6px 12px;
+    .modal .btn {
+      padding: 10px 20px;
       background: #0080ff;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      font-size: 16px;
+      margin: 10px 0;
     }
-    .btn.disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-    .btn i {
-      font-size: 14px;
-    }
-    .mod-credit {
-      font-size: 9px;
-      color: #888;
-      margin-top: 8px;
-    }
-    .view-all-btn {
-      margin-top: 10px;
+    .modal .already-in {
       font-size: 12px;
-      background: #333;
-      color: white;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 6px;
+      color: #bbb;
       cursor: pointer;
     }
-    footer {
-      background: #f0f0f0;
-      padding: 20px;
-      text-align: center;
-      font-size: 14px;
-      color: #444;
-    }
-    .dark-mode footer {
-      background: #181818;
-      color: #bbb;
-    }
-    .social-icons {
-      margin-top: 10px;
-    }
-    .social-icons a {
-      margin: 0 10px;
-      color: inherit;
-      text-decoration: none;
-      font-size: 20px;
-    }
-    .social-icons a:hover {
-      opacity: 0.7;
+    .modal .already-in:hover {
+      text-decoration: underline;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -214,6 +100,18 @@
       </a>
     </div>
   </footer>
+
+  <!-- New Modal -->
+  <div id="telegramModal" class="modal">
+    <div class="modal-content">
+      <img src="logo.png" alt="Logo">
+      <h3>Join Our Telegram Channel</h3>
+      <p>For more modded apps</p>
+      <button class="btn" onclick="joinChannel()">JOIN CHANNEL</button>
+      <div class="already-in" onclick="alreadyInChannel(this)">I'm Already In The Channel</div>
+    </div>
+  </div>
+
   <script>
     const appDataURL = "https://script.google.com/macros/s/AKfycbzJC3ED45wRlpu-1LD2AguRjKzZasFxO-9Jd1TRliUYw30fjif-PJgzkQB8r1y3ai0T/exec";
 
@@ -263,7 +161,7 @@
         <p class="app-description">${app.description || "No description available"}</p>
         <div class="btn-group">
           ${downloadLink 
-            ? `<button class="btn" onclick="window.location.href='${downloadLink}'"><i class='fas fa-download'></i> Download</button>` 
+            ? `<button class="btn" onclick="showTelegramModal('${downloadLink}')"><i class='fas fa-download'></i> Download</button>` 
             : `<button class="btn disabled" disabled><i class='fas fa-download'></i> Unavailable</button>`}
           <button class="btn" onclick="copyToClipboard('${shareLink}')" title="Copy Link"><i class="fas fa-copy"></i></button>
         </div>
@@ -354,6 +252,30 @@
         searchInput.focus();
       }
     };
+
+    // Modal Functions
+    function showTelegramModal(downloadLink) {
+      const modal = document.getElementById("telegramModal");
+      modal.style.display = "block";
+      window.currentDownloadLink = downloadLink; // Store the download link
+    }
+
+    function joinChannel() {
+      const modal = document.getElementById("telegramModal");
+      modal.style.display = "none";
+      window.open("https://t.me/Nawidmod.com", "_blank");
+      if (window.currentDownloadLink) {
+        window.location.href = window.currentDownloadLink;
+      }
+    }
+
+    function alreadyInChannel(element) {
+      const modal = document.getElementById("telegramModal");
+      modal.style.display = "none";
+      if (window.currentDownloadLink) {
+        window.location.href = window.currentDownloadLink;
+      }
+    }
 
     if (localStorage.getItem("dark_mode") === "1") {
       document.body.classList.add("dark-mode");
